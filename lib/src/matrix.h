@@ -4,7 +4,6 @@
 #include <array>
 #include <stdexcept>
 	
-
 namespace linalg {
     
 template<typename T, size_t Rows, size_t Cols>
@@ -13,19 +12,19 @@ class Matrix {
     Matrix();
     Matrix(std::initializer_list<std::initializer_list<T>> values);
 
-    T get_elem(const size_t row, const size_t col);
+    T& operator()(const size_t row, const size_t col);
 
   private:
     std::array<std::array<T, Cols>, Rows> data_;
 };
 
-template<typename T, size_t Cols, size_t Rows>
-Matrix<T, Cols, Rows>::Matrix() {
+template<typename T, size_t Rows, size_t Cols>
+Matrix<T, Rows, Cols>::Matrix() {
     data_.fill({});
 };
 
-template<typename T, size_t Cols, size_t Rows>
-Matrix<T, Cols, Rows>::Matrix(std::initializer_list<std::initializer_list<T>> values) {
+template<typename T, size_t Rows, size_t Cols>
+Matrix<T, Rows, Cols>::Matrix(std::initializer_list<std::initializer_list<T>> values) {
     if(Rows != values.size() || Cols != values.begin()->size()) {
         throw std::invalid_argument("Size of initializer list does not match matrix dimensions.");
     }
@@ -40,6 +39,11 @@ Matrix<T, Cols, Rows>::Matrix(std::initializer_list<std::initializer_list<T>> va
         }
         ++row;
     }
+};
+
+template<typename T, size_t Rows, size_t Cols>
+T& Matrix<T, Rows, Cols>::operator()(const size_t row, const size_t col) {
+    return data_[row][col];
 };
 
 } // namespace linalg
