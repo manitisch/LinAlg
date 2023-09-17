@@ -1,2 +1,2 @@
 # LinAlg
-A basic Linear Algebra library written in C++
+A basic Linear Algebra library written in C++.
