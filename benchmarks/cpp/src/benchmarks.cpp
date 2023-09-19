@@ -1,22 +1,40 @@
+#include <chrono>
+#include <cstdlib>
 #include <iostream>
+#include <limits>
+#include <vector>
 
 #include "matrix_multiplications.h"
 
+const float randomFloat(const float min, const float max) {
+    return min + static_cast <float>(std::rand()) / static_cast<float>(RAND_MAX) * (max - min);
+}
+
 int main() {
-    std::cout << "benchmarks" << std::endl;
+    std::cout << "Start simple matrix mulitplication... " << std::endl;
 
-    auto A = linalg::Matrix<int, 2, 3>{{1, 2, 3},
-                                       {4, 5, 6}};
+    const size_t size = 1024;
+    linalg::Matrix<float, size, size> A{};
+    linalg::Matrix<float, size, size> B{};
 
-    auto B = linalg::Matrix<int, 3, 2>{{10, 11},
-                                       {12, 13},
-                                       {14, 15}};
+    for (size_t i = 0 ; i < size; i++) {
+        for (size_t j = 0; j < size; j++) {
+            A(i, j) = randomFloat(0, 10000);
+            B(i, j) = randomFloat(0, 10000);
+        }
+    }
 
+    // simple multiplication
+    const auto begin = std::chrono::high_resolution_clock::now();
     auto C = matmul::simple(A, B);
+    const auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Result: " << std::endl
-              << C(0, 0) << " " << C(0, 1) << " " << C(0, 2) << std::endl
-              << C(1, 0) << " " << C(1, 1) << " " << C(1, 2) << std::endl;
+    const auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+
+    std::cout << "Elapsed time = " << elapsedTime << " ms" << std::endl;
+
+    // parallel multiplication
+    
 
     return 0;
 }
