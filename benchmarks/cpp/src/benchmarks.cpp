@@ -11,8 +11,6 @@ const float randomFloat(const float min, const float max) {
 }
 
 int main() {
-    std::cout << "Start simple matrix mulitplication... " << std::endl;
-
     const size_t size = 1024;
     linalg::Matrix<float, size, size> A{};
     linalg::Matrix<float, size, size> B{};
@@ -25,15 +23,26 @@ int main() {
     }
 
     // simple multiplication
-    const auto begin = std::chrono::high_resolution_clock::now();
+    std::cout << "Start simple matrix mulitplication... " << std::endl;
+
+    auto begin = std::chrono::high_resolution_clock::now();
     auto C = matmul::simple(A, B);
-    const auto end = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
 
-    const auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
-    std::cout << "Elapsed time = " << elapsedTime << " ms" << std::endl;
+    std::cout << "Elapsed time = " << elapsedTime << std::endl;
 
-    // parallel multiplication
+    // with dot product multiplication
+    std::cout << "Start matrix mulitplication with dot product... " << std::endl;
+
+    begin = std::chrono::high_resolution_clock::now();
+    C = matmul::withDotProduct(A, B);
+    end = std::chrono::high_resolution_clock::now();
+
+    elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+
+    std::cout << "Elapsed time = " << elapsedTime  << std::endl;
     
 
     return 0;
