@@ -28,14 +28,10 @@ namespace matmul {
         linalg::Matrix<T, Rows1, Cols2> C{};
 
         for (size_t i = 0; i < Rows1; i++) {
-            auto row = A.getRow(i);
-
-            for (size_t j = 0; j < Cols2; j++) {    
-                auto col = B.getCol(j);
-                C(i, j) = std::inner_product(row.begin(), row.end(), col.begin(), 0);
+            for (size_t j = 0; j < Cols2; j++) {
+                C(i, j) = std::inner_product(A.rwiseBegin(i), A.rwiseEnd(i), B.cwiseBegin(j), 0);
             }
         }
-
         return C;
     }
 
