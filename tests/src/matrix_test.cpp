@@ -3,8 +3,9 @@
 
 #include "matrix.h"
 
-TEST_CASE("simple test") {
-    
+TEST_CASE("Instantiation") {
+    CHECK_THROWS(linalg::Matrix<float, 1, 1>{{{1 ,1}, {2, 3}}});  
+
     linalg::Matrix<float, 2, 3> A{{{1 ,2, 3},
                                    {4, 5, 6}}};
 
@@ -30,6 +31,61 @@ TEST_CASE("simple test") {
     CHECK(std::array<float, 2>{3, 6} == col2);
 }
 
-TEST_CASE("wrong size of initializer lists") {
-    CHECK_THROWS(linalg::Matrix<float, 1, 1>{{{1 ,1}, {2, 3}}});  
+
+
+TEST_CASE("Iterator") {
+    static constexpr size_t rows = 2;
+    static constexpr size_t columns = 3;
+
+    linalg::Matrix<int, rows, columns> A{{{0 ,1, 2},
+                                          {1, 2, 3}}};
+
+    SUBCASE("Ranges") {
+        CHECK_THROWS(A.rwiseBegin(rows));
+        CHECK_THROWS(A.cwiseBegin(columns));
+    }
+
+    SUBCASE("Access rows") {
+        auto row_iterator = A.rwiseBegin(0);
+    
+        for (int i = 0; i < columns; i++) {
+            CHECK(*row_iterator == i);
+            std::advance(row_iterator, 1);
+        }   
+
+        row_iterator = A.rwiseBegin(1);
+
+        for (int i = 1; i < columns + 1; i++) {
+            CHECK(*row_iterator == i);
+            std::advance(row_iterator, 1);
+        }
+    }
+
+    SUBCASE("Access columns") {
+        auto column_iterator = A.cwiseBegin(0);
+
+        for (int i = 0; i < rows; i++) {
+            CHECK(*column_iterator == i);
+            std::advance(column_iterator, 1);
+        }
+
+        column_iterator = A.cwiseBegin(1);
+
+        for (int i = 1; i < rows + 1; i++) {
+            CHECK(*column_iterator == i);
+            std::advance(column_iterator, 1);
+        }
+
+        column_iterator = A.cwiseBegin(2);
+
+        for (int i = 2; i < rows + 2; i++) {
+            CHECK(*column_iterator == i);
+            std::advance(column_iterator, 1);
+        } 
+    }
+
+    SUBCASE("Distance from begin to end") {     
+        CHECK(std::distance(A.rwiseBegin(0), A.rwiseEnd(0)) == columns);
+        CHECK(std::distance(A.cwiseBegin(0), A.cwiseEnd(0)) == rows);
+    }   
 }
