@@ -5,6 +5,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <tuple>
+#include <type_traits>
 	
 namespace linalg {
     
@@ -45,6 +46,11 @@ class Matrix {
         friend bool operator== (const ColumnIterator& left, const ColumnIterator& right) {
             return left.ptr_ == right.ptr_;
         };
+
+        
+        friend bool operator!= (const ColumnIterator& left, const ColumnIterator& right) {
+            return left.ptr_ != right.ptr_;
+        };
         
       private:
         pointer ptr_;
@@ -67,9 +73,11 @@ class Matrix {
   private:
     std::array<std::array<T, Columns>, Rows> data_;
 
+    static_assert(std::is_scalar<T>(), "Only scalar types are allowed.");
+    static_assert(0 < Rows, "Number of rows has to be greater than 0.");
+    static_assert(0 < Columns, "Number of columns has to be greater than 0.");
     static_assert(std::forward_iterator<RowIterator>);
     static_assert(std::forward_iterator<ColumnIterator>);
-    ColumnIterator columnIterator = ColumnIterator(data_.front().data());
 };
 
 
@@ -104,8 +112,8 @@ T& Matrix<T, Rows, Columns>::operator()(const size_t row, const size_t column) {
 
 template<typename T, size_t Rows, size_t Columns>
 Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseBegin(const size_t row) {
-    if (Rows >= row) {
-        throw std::invalid_argument("Row " + std::string{row} + " outside range.");
+    if (Rows <= row) {
+        throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
     }
 
     return data_[row].begin();
@@ -113,8 +121,8 @@ Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseBegin(const
 
 template<typename T, size_t Rows, size_t Columns>
 Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseEnd(const size_t row) {
-    if (Rows >= row) {
-        throw std::invalid_argument("Row " + std::string{row} + " outside range.");
+    if (Rows <= row) {
+        throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
     }
 
     return data_[row].end();
@@ -122,20 +130,20 @@ Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseEnd(const s
 
 template<typename T, size_t Rows, size_t Columns>
 Matrix<T, Rows, Columns>::ColumnIterator Matrix<T, Rows, Columns>::cwiseBegin(const size_t column) {
-    if (Columns >= column) {
-        throw std::invalid_argument("Column " + std::string{column} + " outside range.");
+    if (Columns <= column) {
+        throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
     }
 
-    return ColumnIterator{data_.front().data() + column};
+    return ColumnIterator{&data_[0][column]};
 }
 
 template<typename T, size_t Rows, size_t Columns>
 Matrix<T, Rows, Columns>::ColumnIterator Matrix<T, Rows, Columns>::cwiseEnd(const size_t column) {
-    if (Columns >= column) {
-        throw std::invalid_argument("Column " + std::string{column} + " outside range.");
+    if (Columns <= column) {
+        throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
     }
 
-    return ColumnIterator{data_.front().data() + Rows + column};
+    return ColumnIterator{&data_[Rows][column]};
 }
 
 template<typename T, size_t Rows, size_t Columns>
