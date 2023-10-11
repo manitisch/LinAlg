@@ -44,6 +44,16 @@ int main() {
 
     std::cout << "Elapsed time = " << elapsedTime  << std::endl;
     
+    // parallel multiplication
+    std::cout << "Start parallel matrix mulitplication... " << std::endl;
+
+    begin = std::chrono::high_resolution_clock::now();
+    C = matmul::parallel(A, B);
+    end = std::chrono::high_resolution_clock::now();
+
+    elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+
+    std::cout << "Elapsed time = " << elapsedTime  << std::endl;
 
     return 0;
 }
