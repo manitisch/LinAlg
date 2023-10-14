@@ -56,22 +56,68 @@ class Matrix {
         pointer ptr_;
     };
 
-    Matrix();
-    Matrix(std::initializer_list<std::initializer_list<T>> values);
+    Matrix() {
+        data_.fill(T{});
+    }
 
-    T& operator()(const size_t row, const size_t column);
+    Matrix(std::initializer_list<std::initializer_list<T>> values) {
+        if(Rows != values.size() || Columns != values.begin()->size()) {
+            throw std::invalid_argument("Size of initializer list does not match matrix dimensions.");
+        }
 
-    RowIterator rwiseBegin(const size_t row);
-    RowIterator rwiseEnd(const size_t row);
-    ColumnIterator cwiseBegin(const size_t column);
-    ColumnIterator cwiseEnd(const size_t column);
+        size_t row = 0;
+        for (const auto& rows : values) {
+            size_t column = 0;
+            for  (const auto& value : rows) {
+                data_[Columns*row + column] = value;
+                ++column;
+            }
+            ++row;
+        }
+    }
 
-    std::array<T, Columns> getRow(const size_t row);
-    std::array<T, Rows> getCol(const size_t column);
-    const std::tuple<const size_t, const size_t> shape();
+    T& operator()(const size_t row, const size_t column) {
+        return data_[Columns*row + column];
+    }
+
+    RowIterator rwiseBegin(const size_t row) {
+        if (Rows <= row) {
+            throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
+        }
+
+        return data_.begin() + (row * Columns);
+    }
+
+    RowIterator rwiseEnd(const size_t row) {
+        if (Rows <= row) {
+            throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
+        }
+
+        return data_.begin() + Columns + (row * Columns);
+    }
+
+    ColumnIterator cwiseBegin(const size_t column) {
+        if (Columns <= column) {
+            throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
+        }
+
+        return ColumnIterator{data_.begin() + column};
+    }
+
+    ColumnIterator cwiseEnd(const size_t column) {
+        if (Columns <= column) {
+            throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
+        }
+
+        return ColumnIterator{data_.end() + column};
+    }
+
+    const std::tuple<const size_t, const size_t> shape() {
+        return {Rows, Columns};
+    }
 
   private:
-    std::array<std::array<T, Columns>, Rows> data_;
+    std::array<T, Columns*Rows> data_;
 
     static_assert(std::is_scalar<T>(), "Only scalar types are allowed.");
     static_assert(0 < Rows, "Number of rows has to be greater than 0.");
@@ -79,94 +125,6 @@ class Matrix {
     static_assert(std::forward_iterator<RowIterator>);
     static_assert(std::forward_iterator<ColumnIterator>);
 };
-
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::Matrix() {
-    data_.fill({});
-};
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::Matrix(std::initializer_list<std::initializer_list<T>> values) {
-    if(Rows != values.size() || Columns != values.begin()->size()) {
-        throw std::invalid_argument("Size of initializer list does not match matrix dimensions.");
-    }
-
-    // TODO maybe with iterator or for_each?
-    size_t row = 0;
-    for (const auto& rows : values) {
-        size_t col = 0;
-        for  (const auto& value : rows) {
-            data_[row][col] = value;
-            ++col;
-        }
-        ++row;
-    }
-};
-
-template<typename T, size_t Rows, size_t Columns>
-T& Matrix<T, Rows, Columns>::operator()(const size_t row, const size_t column) {
-    // TODO check bounds
-    return data_[row][column];
-};
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseBegin(const size_t row) {
-    if (Rows <= row) {
-        throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
-    }
-
-    return data_[row].begin();
-}
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::RowIterator Matrix<T, Rows, Columns>::rwiseEnd(const size_t row) {
-    if (Rows <= row) {
-        throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
-    }
-
-    return data_[row].end();
-}
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::ColumnIterator Matrix<T, Rows, Columns>::cwiseBegin(const size_t column) {
-    if (Columns <= column) {
-        throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
-    }
-
-    return ColumnIterator{&data_[0][column]};
-}
-
-template<typename T, size_t Rows, size_t Columns>
-Matrix<T, Rows, Columns>::ColumnIterator Matrix<T, Rows, Columns>::cwiseEnd(const size_t column) {
-    if (Columns <= column) {
-        throw std::invalid_argument("Column " + std::to_string(column) + " outside range.");
-    }
-
-    return ColumnIterator{&data_[Rows][column]};
-}
-
-template<typename T, size_t Rows, size_t Columns>
-std::array<T, Columns> Matrix<T, Rows, Columns>::getRow(const size_t row) {
-    return data_[row];
-}
-
-template<typename T, size_t Rows, size_t Columns>
-std::array<T, Rows> Matrix<T, Rows, Columns>::getCol(const size_t column) {
-    std::array<T, Rows> tmp_column{};
-
-    for (size_t i = 0; i < Rows; i++) {
-        tmp_column[i] = data_[i][column];
-    }
-
-    return tmp_column;
-}
-
-template<typename T, size_t Rows, size_t Columns>
-const std::tuple<const size_t, const size_t> Matrix<T, Rows, Columns>::shape() {
-    return {Rows, Columns};
-}
-
 } // namespace linalg
 
 #endif // LINALG_MATRIX_H
