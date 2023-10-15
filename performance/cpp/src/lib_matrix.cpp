@@ -1,10 +1,9 @@
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
-#include <limits>
-#include <vector>
 
-#include "matrix_multiplications.h"
+#include "matrix.h"
+
 
 const float randomFloat(const float min, const float max) {
     return min + static_cast <float>(std::rand()) / static_cast<float>(RAND_MAX) * (max - min);
@@ -22,38 +21,13 @@ int main() {
         }
     }
 
-    // simple multiplication
-    std::cout << "Start simple matrix mulitplication... " << std::endl;
-
     auto begin = std::chrono::high_resolution_clock::now();
-    auto C = matmul::simple(A, B);
+    auto C = A*B;
     auto end = std::chrono::high_resolution_clock::now();
 
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
     std::cout << "Elapsed time = " << elapsedTime << std::endl;
-
-    // with dot product multiplication
-    std::cout << "Start matrix mulitplication with dot product... " << std::endl;
-
-    begin = std::chrono::high_resolution_clock::now();
-    C = matmul::withDotProduct(A, B);
-    end = std::chrono::high_resolution_clock::now();
-
-    elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-
-    std::cout << "Elapsed time = " << elapsedTime  << std::endl;
-    
-    // parallel multiplication
-    std::cout << "Start parallel matrix mulitplication... " << std::endl;
-
-    begin = std::chrono::high_resolution_clock::now();
-    C = matmul::parallel(A, B);
-    end = std::chrono::high_resolution_clock::now();
-
-    elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-
-    std::cout << "Elapsed time = " << elapsedTime  << std::endl;
 
     return 0;
 }
