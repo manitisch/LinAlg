@@ -80,6 +80,25 @@ class Matrix {
         return data_[Columns*row + column];
     }
 
+    template<size_t Rows2, size_t Columns2>
+    friend Matrix<T, Rows, Columns2> operator*(Matrix<T, Rows, Columns> A, Matrix<T, Rows2, Columns2> B) {
+        if (Columns != Rows2) {
+            throw std::invalid_argument("Shapes of matrices do not match.");   
+        }
+        
+        Matrix<T, Rows, Columns2> C{};
+
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < Columns; j++) {
+                for (size_t k = 0; k < Columns2; k++) {
+                    C(i, k) += A(i, j) * B(j, k);
+                }
+            }
+        }
+
+        return C;
+    }
+
     RowIterator rwiseBegin(const size_t row) {
         if (Rows <= row) {
             throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
