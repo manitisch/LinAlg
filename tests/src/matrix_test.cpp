@@ -3,21 +3,65 @@
 
 #include "matrix.h"
 
-TEST_CASE("Instantiation") {
-    CHECK_THROWS(linalg::Matrix<float, 1, 1>{{{1 ,1}, {2, 3}}});  
+TEST_CASE("Construction") {
+    SUBCASE("Size of initalization list") {
+        CHECK_THROWS(linalg::Matrix<float, 1, 1>{{{1 ,1}, {2, 3}}});  
+    }
 
-    linalg::Matrix<float, 2, 3> A{{{1 ,2, 3},
-                                   {4, 5, 6}}};
+    SUBCASE("Zero initialization") {
+        linalg::Matrix<float, 2, 2> A{};
 
-    CHECK(1 == A(0, 0));
-    CHECK(2 == A(0, 1));
-    CHECK(3 == A(0, 2));
-    CHECK(4 == A(1, 0));
-    CHECK(5 == A(1, 1));
-    CHECK(6 == A(1, 2));
+        CHECK(0 == A(0, 0));
+        CHECK(0 == A(0, 1));
+        CHECK(0 == A(1, 0));
+        CHECK(0 == A(1, 1));
+    }
+
+    SUBCASE("Initialization list") {
+        linalg::Matrix<float, 2, 3> A{{{1 ,2, 3},
+                                       {4, 5, 6}}};
+
+        CHECK(1 == A(0, 0));
+        CHECK(2 == A(0, 1));
+        CHECK(3 == A(0, 2));
+        CHECK(4 == A(1, 0));
+        CHECK(5 == A(1, 1));
+        CHECK(6 == A(1, 2));
+    }
 }
 
+TEST_CASE("Multiplication") {
+    SUBCASE("Mismatch of shapes") {
+       linalg::Matrix<double, 2, 2> A{};
+       linalg::Matrix<double, 3, 3> B{};
 
+       CHECK_THROWS(A*B); 
+    }
+
+    SUBCASE("Shape and result") {
+        linalg::Matrix<int, 2, 3> A{{-1, 4, 2},
+                                    {-9, 0, 5}};
+
+        linalg::Matrix<int, 3, 4> B{{ 6,  7,  1,  8},
+                                    { 0, -2, -5, -5},
+                                    {-3,  6,  1,  3}};
+
+        auto C = A*B;
+        const auto[rows, columns] = C.shape();
+
+        CHECK(2 == rows);
+        CHECK(4 == columns);
+
+        CHECK(-12 == C(0,0));
+        CHECK( -3 == C(0,1));
+        CHECK(-19 == C(0,2));
+        CHECK(-22 == C(0,3));
+        CHECK(-69 == C(1,0));
+        CHECK(-33 == C(1,1));
+        CHECK( -4 == C(1,2));
+        CHECK(-57 == C(1,3));
+    }
+}
 
 TEST_CASE("Iterator") {
     static constexpr size_t rows = 2;
