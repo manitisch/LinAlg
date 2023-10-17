@@ -1,9 +1,8 @@
-#include <chrono>
+import Matrix;
+
+#include <chrono>;
 #include <cstdlib>
 #include <iostream>
-
-#include "matrix.h"
-
 
 const float randomFloat(const float min, const float max) {
     return min + static_cast <float>(std::rand()) / static_cast<float>(RAND_MAX) * (max - min);

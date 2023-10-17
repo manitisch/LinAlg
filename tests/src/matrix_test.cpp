@@ -1,7 +1,9 @@
+import Matrix;
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "matrix.h"
+
 
 TEST_CASE("Construction") {
     SUBCASE("Size of initalization list") {
