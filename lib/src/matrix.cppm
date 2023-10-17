@@ -1,5 +1,4 @@
-#ifndef LINALG_MATRIX_H
-#define LINALG_MATRIX_H
+module;
 
 #include <array>
 #include <iterator>
@@ -7,7 +6,9 @@
 #include <tuple>
 #include <type_traits>
 	
-namespace linalg {
+export module Matrix;
+
+export namespace linalg {
     
 template<typename T, size_t Rows, size_t Columns>
 class Matrix {
@@ -145,5 +146,3 @@ class Matrix {
     static_assert(std::forward_iterator<ColumnIterator>);
 };
 } // namespace linalg
-
-#endif // LINALG_MATRIX_H
