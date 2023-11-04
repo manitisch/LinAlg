@@ -1,5 +1,8 @@
-add_library(Doctest INTERFACE)
-target_include_directories(Doctest INTERFACE thirparty)
+add_library(${PROJECT_NAME}_Doctest INTERFACE)
+target_include_directories(${PROJECT_NAME}_Doctest INTERFACE thirparty)
 
-add_executable(MatrixTest src/matrix_test.cpp)
-target_link_libraries(MatrixTest PRIVATE LinAlg Doctest)
+add_executable(${PROJECT_NAME}_MatrixTest src/matrix_test.cpp)
+target_link_libraries(${PROJECT_NAME}_MatrixTest PRIVATE ${PROJECT_NAME}_Matrix
+                                                         ${PROJECT_NAME}_Doctest)
+
+add_test(${PROJECT_NAME}_Tests ${PROJECT_NAME}_MatrixTest)
