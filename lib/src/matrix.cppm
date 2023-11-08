@@ -81,8 +81,12 @@ class Matrix {
         return data_[Columns*row + column];
     }
 
+    const T& operator()(const size_t row, const size_t column) const {
+        return data_[Columns*row + column];
+    }
+
     template<size_t Rows2, size_t Columns2>
-    friend Matrix<T, Rows, Columns2> operator*(Matrix<T, Rows, Columns> A, Matrix<T, Rows2, Columns2> B) {
+    friend Matrix<T, Rows, Columns2> operator*(const Matrix<T, Rows, Columns>& A, const Matrix<T, Rows2, Columns2>& B) {
         if (Columns != Rows2) {
             throw std::invalid_argument("Shapes of matrices do not match.");   
         }
@@ -132,7 +136,7 @@ class Matrix {
         return ColumnIterator{data_.end() + column};
     }
 
-    const std::tuple<const size_t, const size_t> shape() {
+    const std::tuple<const size_t, const size_t> shape() const {
         return {Rows, Columns};
     }
 
