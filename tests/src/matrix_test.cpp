@@ -34,10 +34,10 @@ TEST_CASE("Construction") {
 
 TEST_CASE("Multiplication") {
     SUBCASE("Mismatch of shapes") {
-       linalg::Matrix<double, 2, 2> A{};
-       linalg::Matrix<double, 3, 3> B{};
+        linalg::Matrix<double, 2, 2> A{};
+        linalg::Matrix<double, 3, 3> B{};
 
-       CHECK_THROWS(A*B); 
+        CHECK_THROWS(A*B); 
     }
 
     SUBCASE("Shape and result") {
