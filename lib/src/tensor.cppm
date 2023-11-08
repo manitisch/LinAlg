@@ -16,7 +16,7 @@ export namespace linalg {
 template<typename T, size_t Rows, size_t Columns>
 class Tensor {
   public:
-    using Iterator = std::vector<Matrix<T, Rows, Columns>>::iterator;
+    using ConstIterator = std::vector<Matrix<T, Rows, Columns>>::const_iterator;
 
     Tensor(const size_t depth) {
         data_.reserve(depth);
@@ -40,30 +40,30 @@ class Tensor {
     }
 
     template<size_t Rows2, size_t Columns2>
-    friend Tensor<T, Rows, Columns2> operator*(Tensor<T, Rows, Columns>& A, Tensor<T, Rows2, Columns2>& B) {
+    friend Tensor<T, Rows, Columns2> operator*(const Tensor<T, Rows, Columns>& A, const Tensor<T, Rows2, Columns2>& B) {
         if (std::get<0>(A.shape()) != std::get<0>(B.shape())) {
             throw std::invalid_argument("Shapes of tensors do not match.");   
         }
         
         Tensor<T, Rows, Columns2> C{};
 
-        auto b = B.begin();
-        auto multiply = [&b, &C](const auto& a){
+        auto b = B.cbegin();
+        auto multiply = [&b, &C](auto& a){
             C.append(a*(*b));
             b = std::next(b);
         };
  
-        std::for_each(A.begin(), A.end(), multiply); // TODO: add execution policy
+        std::for_each(A.cbegin(), A.cend(), multiply); // TODO: add execution policy
 
         return C;
     }
 
-    Iterator begin() {
-        return data_.begin();
+    ConstIterator cbegin() const {
+        return data_.cbegin();
     }
 
-    Iterator end() {
-        return data_.end();
+    ConstIterator cend() const {
+        return data_.cend();
     }
 
     const std::tuple<const size_t, const size_t, const size_t> shape() const {
@@ -74,7 +74,7 @@ class Tensor {
   private:
     std::vector<Matrix<T, Rows, Columns>> data_;
 
-    static_assert(std::forward_iterator<Iterator>);
+    static_assert(std::forward_iterator<ConstIterator>);
 };
 
 } // namespace linalg
