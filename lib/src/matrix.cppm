@@ -11,6 +11,7 @@ export module Matrix;
 export namespace linalg {
     
 template<typename T, size_t Rows, size_t Columns>
+requires std::is_scalar_v<T> && (0 < Rows) && (0 < Columns)
 class Matrix {
   public:
     using RowIterator = std::array<T, Columns>::iterator;
@@ -143,9 +144,6 @@ class Matrix {
   private:
     std::array<T, Columns*Rows> data_;
 
-    static_assert(std::is_scalar<T>(), "Only scalar types are allowed.");
-    static_assert(0 < Rows, "Number of rows has to be greater than 0.");
-    static_assert(0 < Columns, "Number of columns has to be greater than 0.");
     static_assert(std::forward_iterator<RowIterator>);
     static_assert(std::forward_iterator<ColumnIterator>);
 };
