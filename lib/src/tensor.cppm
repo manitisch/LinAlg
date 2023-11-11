@@ -83,6 +83,7 @@ class Tensor {
   private:
     std::vector<Matrix<T, Rows, Columns>> data_;
 
+    static_assert(std::forward_iterator<Iterator>);
     static_assert(std::forward_iterator<ConstIterator>);
 };
 
