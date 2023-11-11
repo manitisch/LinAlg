@@ -16,6 +16,7 @@ export namespace linalg {
 template<typename T, size_t Rows, size_t Columns>
 class Tensor {
   public:
+    using Iterator = std::vector<Matrix<T, Rows, Columns>>::iterator;
     using ConstIterator = std::vector<Matrix<T, Rows, Columns>>::const_iterator;
 
     Tensor(const size_t depth) {
@@ -56,6 +57,14 @@ class Tensor {
         std::for_each(A.cbegin(), A.cend(), multiply); // TODO: add execution policy
 
         return C;
+    }
+
+    Iterator begin() {
+        return data_.begin();
+    }
+
+    Iterator end() {
+        return data_.end();
     }
 
     ConstIterator cbegin() const {
