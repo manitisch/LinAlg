@@ -14,6 +14,7 @@ template<typename T, size_t Rows, size_t Columns>
 requires std::is_scalar_v<T> && (0 < Rows) && (0 < Columns)
 class Matrix {
   public:
+    using Iterator = std::array<T, Rows*Columns>::iterator;
     using RowIterator = std::array<T, Columns>::iterator;
 
     class ColumnIterator {
@@ -105,6 +106,14 @@ class Matrix {
         return C;
     }
 
+    Iterator begin() {
+        return data_.begin();
+    }
+
+    Iterator end() {
+        return data_.end();
+    }
+
     RowIterator rwiseBegin(const size_t row) {
         if (Rows <= row) {
             throw std::invalid_argument("Row " + std::to_string(row) + " outside range.");
@@ -142,7 +151,7 @@ class Matrix {
     }
 
   private:
-    std::array<T, Columns*Rows> data_;
+    std::array<T, Rows*Columns> data_;
 
     static_assert(std::forward_iterator<RowIterator>);
     static_assert(std::forward_iterator<ColumnIterator>);
