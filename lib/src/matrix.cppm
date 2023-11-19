@@ -115,11 +115,11 @@ class Matrix {
         return data_.end();
     }
 
-    ConstIterator cbegin() {
+    ConstIterator cbegin() const {
         return data_.cbegin();
     }
 
-    ConstIterator cend() {
+    ConstIterator cend() const {
         return data_.cend();
     }
 
