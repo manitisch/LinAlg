@@ -15,6 +15,7 @@ requires std::is_scalar_v<T> && (0 < Rows) && (0 < Columns)
 class Matrix {
   public:
     using Iterator = std::array<T, Rows*Columns>::iterator;
+    using ConstIterator = std::array<T, Rows*Columns>::const_iterator;
     using RowIterator = std::array<T, Columns>::iterator;
 
     class ColumnIterator {
@@ -112,6 +113,14 @@ class Matrix {
 
     Iterator end() {
         return data_.end();
+    }
+
+    ConstIterator cbegin() {
+        return data_.cbegin();
+    }
+
+    ConstIterator cend() {
+        return data_.cend();
     }
 
     RowIterator rwiseBegin(const size_t row) {
