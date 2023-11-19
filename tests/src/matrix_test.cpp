@@ -13,22 +13,22 @@ TEST_CASE("Construction") {
     SUBCASE("Zero initialization") {
         linalg::Matrix<float, 2, 2> A{};
 
-        CHECK(0 == A(0, 0));
-        CHECK(0 == A(0, 1));
-        CHECK(0 == A(1, 0));
-        CHECK(0 == A(1, 1));
+        CHECK(doctest::Approx(0) == A(0, 0));
+        CHECK(doctest::Approx(0) == A(0, 1));
+        CHECK(doctest::Approx(0) == A(1, 0));
+        CHECK(doctest::Approx(0) == A(1, 1));
     }
 
     SUBCASE("Initialization list") {
         linalg::Matrix<float, 2, 3> A{{{1 ,2, 3},
                                        {4, 5, 6}}};
 
-        CHECK(1 == A(0, 0));
-        CHECK(2 == A(0, 1));
-        CHECK(3 == A(0, 2));
-        CHECK(4 == A(1, 0));
-        CHECK(5 == A(1, 1));
-        CHECK(6 == A(1, 2));
+        CHECK(doctest::Approx(1) == A(0, 0));
+        CHECK(doctest::Approx(2) == A(0, 1));
+        CHECK(doctest::Approx(3) == A(0, 2));
+        CHECK(doctest::Approx(4) == A(1, 0));
+        CHECK(doctest::Approx(5) == A(1, 1));
+        CHECK(doctest::Approx(6) == A(1, 2));
     }
 }
 
