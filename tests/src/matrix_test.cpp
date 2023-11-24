@@ -33,36 +33,43 @@ TEST_CASE("Construction") {
 }
 
 TEST_CASE("Multiplication") {
-    SUBCASE("Mismatch of shapes") {
-        linalg::Matrix<double, 2, 2> A{};
-        linalg::Matrix<double, 3, 3> B{};
+    linalg::Matrix<int, 2, 3> A{{-1, 4, 2},
+                                {-9, 0, 5}};
 
-        CHECK_THROWS(A*B); 
-    }
+    linalg::Matrix<int, 3, 4> B{{ 6,  7,  1,  8},
+                                { 0, -2, -5, -5},
+                                {-3,  6,  1,  3}};
 
-    SUBCASE("Shape and result") {
-        linalg::Matrix<int, 2, 3> A{{-1, 4, 2},
-                                    {-9, 0, 5}};
+    auto C = A*B;
+    const auto[rows, columns] = C.shape();
 
-        linalg::Matrix<int, 3, 4> B{{ 6,  7,  1,  8},
-                                    { 0, -2, -5, -5},
-                                    {-3,  6,  1,  3}};
+    CHECK(2 == rows);
+    CHECK(4 == columns);
 
-        auto C = A*B;
-        const auto[rows, columns] = C.shape();
+    CHECK(-12 == C(0,0));
+    CHECK( -3 == C(0,1));
+    CHECK(-19 == C(0,2));
+    CHECK(-22 == C(0,3));
+    CHECK(-69 == C(1,0));
+    CHECK(-33 == C(1,1));
+    CHECK( -4 == C(1,2));
+    CHECK(-57 == C(1,3));
+}
 
-        CHECK(2 == rows);
-        CHECK(4 == columns);
+TEST_CASE("Addition") {
+    linalg::Matrix<int, 3, 2> A{{1, 1},
+                                {1, 1},
+                                {1, 1}};
+    
+    linalg::Matrix<int, 3, 2> B{{2, 2},
+                                {2, 2},
+                                {2, 2}};
 
-        CHECK(-12 == C(0,0));
-        CHECK( -3 == C(0,1));
-        CHECK(-19 == C(0,2));
-        CHECK(-22 == C(0,3));
-        CHECK(-69 == C(1,0));
-        CHECK(-33 == C(1,1));
-        CHECK( -4 == C(1,2));
-        CHECK(-57 == C(1,3));
-    }
+    auto C = A + B;
+
+    for (auto& c : C) {
+        CHECK(3 == c);
+    };
 }
 
 TEST_CASE("Iterator") {

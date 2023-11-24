@@ -2,6 +2,7 @@ module;
 
 #include <array>
 #include <iterator>
+#include <ranges>
 #include <stdexcept>
 #include <tuple>
 #include <type_traits>
@@ -89,11 +90,8 @@ class Matrix {
     }
 
     template<size_t Rows2, size_t Columns2>
-    friend Matrix<T, Rows, Columns2> operator*(const Matrix<T, Rows, Columns>& A, const Matrix<T, Rows2, Columns2>& B) {
-        if (Columns != Rows2) {
-            throw std::invalid_argument("Shapes of matrices do not match.");   
-        }
-        
+    requires (Columns == Rows2)
+    friend Matrix<T, Rows, Columns2> operator*(const Matrix<T, Rows, Columns>& A, const Matrix<T, Rows2, Columns2>& B) {        
         Matrix<T, Rows, Columns2> C{};
 
         for (size_t i = 0; i < Rows; i++) {
@@ -106,6 +104,17 @@ class Matrix {
 
         return C;
     }
+
+    Matrix<T, Rows, Columns> operator+(const Matrix<T, Rows, Columns>& B) {
+        Matrix<T, Rows, Columns> C{};
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < Columns; j++) {
+                C(i, j) = this->operator()(i, j) + B(i, j);
+            }
+        }
+        
+        return C;
+    };
 
     Iterator begin() {
         return data_.begin();
