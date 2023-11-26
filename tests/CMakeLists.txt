@@ -9,5 +9,5 @@ add_executable(${PROJECT_NAME}_TensorTest src/tensor_test.cpp)
 target_link_libraries(${PROJECT_NAME}_TensorTest PRIVATE ${PROJECT_NAME}_Tensor
                                                          ${PROJECT_NAME}_Doctest)
 
-add_test(${PROJECT_NAME}_Tests ${PROJECT_NAME}_MatrixTest)
-add_test(${PROJECT_NAME}_Tests ${PROJECT_NAME}_TensorTest)
+add_test(${PROJECT_NAME}_MatrixTest ${PROJECT_NAME}_MatrixTest)
+add_test(${PROJECT_NAME}_TensorTest ${PROJECT_NAME}_TensorTest)
