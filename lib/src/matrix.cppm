@@ -2,7 +2,6 @@ module;
 
 #include <array>
 #include <iterator>
-#include <ranges>
 #include <stdexcept>
 #include <tuple>
 #include <type_traits>

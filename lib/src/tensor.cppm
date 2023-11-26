@@ -5,7 +5,6 @@ import Matrix;
 #include <algorithm>
 #include <iterator>
 #include <stdexcept>
-#include <ranges>
 #include <tuple>
 #include <vector>
 
